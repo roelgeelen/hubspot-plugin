@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,7 @@ public class DealService {
             .build();
 
     @Autowired
+    @Qualifier("Hubspot")
     private RestTemplate restTemplate;
 
     public HObject<Deal> getDeal(String id) throws JsonProcessingException {

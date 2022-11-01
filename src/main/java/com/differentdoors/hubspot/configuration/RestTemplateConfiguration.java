@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplateConfiguration {
-    @Bean
+    @Bean(name = "Hubspot")
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
