@@ -13,7 +13,6 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Association {
-    private String id;
-    private String type;
+public class Company<T> {
+    private T name;
 }

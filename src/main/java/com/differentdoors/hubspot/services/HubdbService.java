@@ -23,12 +23,8 @@ import java.util.Map;
 
 @Service
 public class HubdbService {
-    @Value("${differentdoors.hubspot.url}")
+    @Value("${different_doors.hubspot.url}")
     private String URL;
-
-    @Value("${differentdoors.hubspot.hapikey}")
-    private String hapikey;
-
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .findAndAddModules()
@@ -43,8 +39,7 @@ public class HubdbService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         if (filter != null) {
             builder.queryParam(filter, filterValue);
@@ -58,8 +53,7 @@ public class HubdbService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HubTable<?>>() {
         });
@@ -69,8 +63,7 @@ public class HubdbService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -84,8 +77,7 @@ public class HubdbService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId + "/draft");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -98,8 +90,7 @@ public class HubdbService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId + "/draft");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.DELETE, null, String.class);
         publishTable(tableId);
@@ -109,8 +100,7 @@ public class HubdbService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/draft/publish");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -24,12 +24,8 @@ import java.util.Map;
 
 @Service
 public class FileService {
-    @Value("${differentdoors.hubspot.url}")
+    @Value("${different_doors.hubspot.url}")
     private String URL;
-
-    @Value("${differentdoors.hubspot.hapikey}")
-    private String hapikey;
-
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .findAndAddModules()
@@ -44,8 +40,7 @@ public class FileService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "/files/v3/files");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -77,8 +72,7 @@ public class FileService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "files/v3/files/search");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         if (filter != null) {
             builder.queryParam(filter, filterValue);
@@ -91,8 +85,7 @@ public class FileService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "files/v3/files/" + fileId);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         restTemplate.delete(builder.buildAndExpand(urlParams).toUri());
     }

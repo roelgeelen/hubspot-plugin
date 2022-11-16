@@ -23,12 +23,8 @@ import java.util.Map;
 
 @Service
 public class NoteService {
-    @Value("${differentdoors.hubspot.url}")
+    @Value("${different_doors.hubspot.url}")
     private String URL;
-
-    @Value("${differentdoors.hubspot.hapikey}")
-    private String hapikey;
-
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .findAndAddModules()
@@ -43,8 +39,7 @@ public class NoteService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/notes");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -53,12 +48,11 @@ public class NoteService {
         });
     }
 
-    private void associateNote(String noteId, String objectId, String toObjectKey) {
+    public void associateNote(String noteId, String objectId, String toObjectKey) {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/notes/" + noteId + "/associations/deals/" + objectId + "/" + toObjectKey);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

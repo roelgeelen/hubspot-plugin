@@ -28,12 +28,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DealService {
-    @Value("${differentdoors.hubspot.url}")
+    @Value("${different_doors.hubspot.url}")
     private String URL;
-
-    @Value("${differentdoors.hubspot.hapikey}")
-    private String hapikey;
-
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .findAndAddModules()
@@ -44,23 +40,21 @@ public class DealService {
     @Qualifier("Hubspot")
     private RestTemplate restTemplate;
 
-    public HObject<Deal> getDeal(String id) throws JsonProcessingException {
+    public HObject<Deal<String>> getDeal(String id) throws JsonProcessingException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/deals/" + id);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey)
                 .queryParam("properties", getClassProperties());
 
-        return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HObject<Deal>>() {});
+        return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HObject<Deal<String>>>() {});
     }
 
-    public void updateDeal(String id, HObject<Deal> deal) throws JsonProcessingException {
+    public void updateDeal(String id, HObject<Deal<String>> deal) throws JsonProcessingException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/deals/" + id);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -72,8 +66,7 @@ public class DealService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/deals/" + id + "/associations/" + toObjectType);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HResults<Association>>() {});
     }
@@ -82,8 +75,7 @@ public class DealService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/deals/" + id + "/associations/" + toObjectType + "/" + toObjectId + "/" + associationType);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         restTemplate.delete(builder.buildAndExpand(urlParams).toUri());
     }

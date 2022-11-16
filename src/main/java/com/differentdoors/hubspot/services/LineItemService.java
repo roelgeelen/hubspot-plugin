@@ -1,9 +1,7 @@
 package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HObject;
-import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.Objects.LineItem;
-import com.differentdoors.hubspot.models.Objects.Product;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,12 +23,8 @@ import java.util.Map;
 
 @Service
 public class LineItemService {
-    @Value("${differentdoors.hubspot.url}")
+    @Value("${different_doors.hubspot.url}")
     private String URL;
-
-    @Value("${differentdoors.hubspot.hapikey}")
-    private String hapikey;
-
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .findAndAddModules()
@@ -45,8 +39,7 @@ public class LineItemService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/line_items");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -60,8 +53,7 @@ public class LineItemService {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/line_items/" + lineItemID + "/associations/" + toObjectType + "/" + toObjectId + "/" + associationType);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("hapikey", hapikey);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
