@@ -24,4 +24,5 @@ public class Contact<T> {
     private T salutation;
     private T hs_object_id;
     private T land;
+    private T type_klant;
 }

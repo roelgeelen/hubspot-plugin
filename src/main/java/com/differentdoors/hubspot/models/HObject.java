@@ -17,7 +17,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HObject<T> {
     // Customer
-    private int vid;
+    private String vid;
     @JsonProperty("associated-company")
     private HObject<Company<Property>> company;
 
