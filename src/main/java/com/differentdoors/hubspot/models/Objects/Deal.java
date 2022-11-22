@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -38,5 +41,6 @@ public class Deal<T> {
     private T locatie_van_de_afspraak;
     private T dealstage;
     private T signature;
-
+    private T amount;
+    private T project_ingemeten;
 }

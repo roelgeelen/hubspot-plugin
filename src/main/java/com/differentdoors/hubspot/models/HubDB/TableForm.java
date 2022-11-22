@@ -63,6 +63,7 @@ public class TableForm {
     private String type_profilering = "";
     private String afstand_belijning = "";
     private String aflakken_op_locatie = "";
+    private String aflakken = "";
     private String uitstraling_binnenzijde = "";
     private String deur_ral_binnen = "";
     private String kozijn_ral_binnen = "";
@@ -140,4 +141,5 @@ public class TableForm {
     private String geschatte_woningwaarde = "";
     private String wanneer_gaat_het_project_spelen_ = "";
     private String scharnierzijde = "";
+    private String deur_op_zuiden = "";
 }
