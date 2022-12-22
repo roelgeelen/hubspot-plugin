@@ -7,9 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -43,4 +40,11 @@ public class Deal<T> {
     private T signature;
     private T amount;
     private T project_ingemeten;
+    private T email;
+    private T aanbetaling;
+    private T deurgewicht_incl;
+    private T deurgewicht_excl;
+    private T te_maken_projecten;
+    private T weging;
+    private T houtsoort;
 }

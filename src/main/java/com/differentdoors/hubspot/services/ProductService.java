@@ -39,7 +39,7 @@ public class ProductService {
     @Qualifier("Hubspot")
     private RestTemplate restTemplate;
 
-    public HResults<HObject<Product>> searchProduct(List<Filter> filters) throws JsonProcessingException {
+    public HResults<HObject<Product>> searchProduct(Search search) throws JsonProcessingException {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/products/search");
 
@@ -48,7 +48,7 @@ public class ProductService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(new Search(filters)), headers);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(search), headers);
         return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<Product>>>() {
         });
     }

@@ -19,4 +19,6 @@ public class LineItem {
     private String price;
     private String quantity;
     private String hs_position_on_quote;
+    private String hs_product_type;
+    private int weging;
 }

@@ -18,4 +18,6 @@ public class Product {
     private String description;
     private String hs_sku;
     private String price;
+    private String hs_product_type;
+    private int weging;
 }

@@ -47,7 +47,7 @@ public class DealService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
                 .queryParam("properties", getClassProperties());
 
-        return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HObject<Deal<String>>>() {});
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HObject<Deal<String>>>() {});
     }
 
     public void updateDeal(String id, HObject<Deal<String>> deal) throws JsonProcessingException {
@@ -68,7 +68,7 @@ public class DealService {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
-        return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HResults<Association>>() {});
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HResults<Association>>() {});
     }
 
     public void deleteDealAssociation(String id, String toObjectType, String toObjectId, String associationType) {
