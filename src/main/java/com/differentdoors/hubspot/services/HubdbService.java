@@ -3,7 +3,6 @@ package com.differentdoors.hubspot.services;
 import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.HubDB.HubTable;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -14,7 +13,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.retry.RetryException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,7 +39,8 @@ public class HubdbService {
     @Qualifier("Hubspot")
     private RestTemplate restTemplate;
 
-    public HResults<HubTable<?>> getDBRows(int tableId, String filter, String filterValue) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<HubTable<?>> getDBRows(int tableId, String filter, String filterValue) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
 
@@ -49,7 +54,8 @@ public class HubdbService {
         });
     }
 
-    public HubTable<?> getDBRow(int tableId, String rowId) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HubTable<?> getDBRow(int tableId, String rowId) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId);
 
@@ -59,7 +65,8 @@ public class HubdbService {
         });
     }
 
-    public HubTable<?> createDBRow(int tableId, HubTable<?> tableRow) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HubTable<?> createDBRow(int tableId, HubTable<?> tableRow) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
 
@@ -73,7 +80,8 @@ public class HubdbService {
         return d;
     }
 
-    public void updateDBRow(int tableId, String rowId, HubTable<?> tableRow) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public void updateDBRow(int tableId, String rowId, HubTable<?> tableRow) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId + "/draft");
 
@@ -86,6 +94,7 @@ public class HubdbService {
         publishTable(tableId);
     }
 
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public void deleteDBRow(int tableId, String rowId) {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId + "/draft");
@@ -96,6 +105,7 @@ public class HubdbService {
         publishTable(tableId);
     }
 
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public void publishTable(int tableId) {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/draft/publish");
@@ -106,5 +116,10 @@ public class HubdbService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> requestEntityPublish = new HttpEntity<>(null, headers);
         restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntityPublish, String.class);
+    }
+
+    @Recover
+    public RetryException recover(Exception t){
+        return new RetryException("Maximum retries reached: " + t.getMessage());
     }
 }

@@ -1,10 +1,8 @@
 package com.differentdoors.hubspot.services;
 
-import com.differentdoors.hubspot.models.HObject;
 import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.Objects.File;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -12,10 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.retry.RetryException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,7 +39,8 @@ public class FileService {
     @Qualifier("Hubspot")
     private RestTemplate restTemplate;
 
-    public File createFile(String folder, String filename, byte[] byteArray) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public File createFile(String folder, String filename, byte[] byteArray) {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "/files/v3/files");
 
@@ -68,7 +72,8 @@ public class FileService {
         }
     }
 
-    public HResults<File> searchFile(String filter, String filterValue) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<File> searchFile(String filter, String filterValue) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "files/v3/files/search");
 
@@ -81,6 +86,7 @@ public class FileService {
         return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HResults<File>>() {});
     }
 
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public void deleteFile(String fileId) {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "files/v3/files/" + fileId);
@@ -88,5 +94,10 @@ public class FileService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
         restTemplate.delete(builder.buildAndExpand(urlParams).toUri());
+    }
+
+    @Recover
+    public RetryException recover(Exception t){
+        return new RetryException("Maximum retries reached: " + t.getMessage());
     }
 }

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,6 +22,12 @@ public class HObject<T> {
     private String vid;
     @JsonProperty("associated-company")
     private HObject<Company<Property>> company;
+
+    // Response
+    private String status;
+    private String message;
+    private String category;
+    private List<Object> errors;
 
     private String id;
     private String objectId;

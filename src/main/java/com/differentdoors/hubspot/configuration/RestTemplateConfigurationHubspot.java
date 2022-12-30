@@ -9,15 +9,15 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Duration;
 
 @Configuration
-public class RestTemplateConfiguration {
+public class RestTemplateConfigurationHubspot {
     @Value("${different_doors.hubspot.token}")
     private String token;
 
     @Bean(name = "Hubspot")
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
-                .setConnectTimeout(Duration.ofSeconds(15))
-                .setReadTimeout(Duration.ofSeconds(15))
+                .setConnectTimeout(Duration.ofSeconds(7))
+                .setReadTimeout(Duration.ofSeconds(7))
                 .defaultHeader("Authorization", "Bearer " + token).build();
     }
 }

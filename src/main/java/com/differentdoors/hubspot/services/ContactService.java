@@ -2,16 +2,19 @@ package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HObject;
 import com.differentdoors.hubspot.models.Objects.Contact;
-import com.differentdoors.hubspot.models.Objects.Deal;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.RetryException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,7 +38,8 @@ public class ContactService {
     @Qualifier("Hubspot")
     private RestTemplate restTemplate;
 
-    public HObject<Contact<String>> getContact(String id) throws JsonProcessingException {
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HObject<Contact<String>> getContact(String id) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/contacts/" + id);
 
@@ -49,4 +53,8 @@ public class ContactService {
         return Arrays.stream(Contact.class.getDeclaredFields()).map(Field::getName).collect(Collectors.joining(","));
     }
 
+    @Recover
+    public RetryException recover(Exception t){
+        return new RetryException("Maximum retries reached: " + t.getMessage());
+    }
 }
