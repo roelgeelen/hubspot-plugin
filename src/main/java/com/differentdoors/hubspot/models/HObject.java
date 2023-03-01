@@ -32,8 +32,13 @@ public class HObject<T> {
     private String id;
     private String objectId;
     private T properties;
+    private List<HObjectAssociation> associations;
 
     public HObject(T properties) {
         this.properties = properties;
+    }
+    public HObject(T properties, List<HObjectAssociation> associations) {
+        this.properties = properties;
+        this.associations = associations;
     }
 }

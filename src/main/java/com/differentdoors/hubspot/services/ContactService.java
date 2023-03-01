@@ -1,7 +1,10 @@
 package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HObject;
+import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.Objects.Contact;
+import com.differentdoors.hubspot.models.Objects.Product;
+import com.differentdoors.hubspot.models.Search.Search;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +12,9 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.retry.RetryException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -37,6 +43,21 @@ public class ContactService {
     @Autowired
     @Qualifier("Hubspot")
     private RestTemplate restTemplate;
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<HObject<Contact<String>>> searchContact(Search search) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/contacts/search");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(search), headers);
+        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<Contact<String>>>>() {
+        });
+    }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public HObject<Contact<String>> getContact(String id) throws Exception {

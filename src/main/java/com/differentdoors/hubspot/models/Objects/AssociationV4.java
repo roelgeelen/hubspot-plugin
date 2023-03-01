@@ -1,4 +1,4 @@
-package com.differentdoors.hubspot.models;
+package com.differentdoors.hubspot.models.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,8 +15,7 @@ import java.util.List;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HResults<T> {
-    private int total;
-    private List<T> results;
-    private Paging paging;
+public class AssociationV4 {
+    private String toObjectId;
+    private List<AssociationTypeV4> associationTypes;
 }

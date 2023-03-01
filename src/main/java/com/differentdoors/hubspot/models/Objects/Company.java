@@ -15,4 +15,10 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Company<T> {
     private T name;
+    private T address;
+    private T zip;
+    private T city;
+    private T phone;
+    private T country;
+    private T e_mail;
 }

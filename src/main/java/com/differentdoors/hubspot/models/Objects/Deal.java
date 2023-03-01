@@ -42,9 +42,17 @@ public class Deal<T> {
     private T project_ingemeten;
     private T email;
     private T aanbetaling;
-    private T deurgewicht_incl;
-    private T deurgewicht_excl;
+    private T betalingsvoorwaarde;
     private T te_maken_projecten;
     private T weging;
     private T houtsoort;
+    private T opvragen_tekeningen;
+    private T gewicht_ingevuld;
+    private T gewicht_omschrijving;
+    private T montage_dag;
+    private T shop_order_id;
+    private T shop_order_link;
+    private T shop_verzend_methode;
+    private T onderhanden;
+    private T montage_duration;
 }

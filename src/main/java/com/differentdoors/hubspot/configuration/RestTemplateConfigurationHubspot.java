@@ -16,8 +16,8 @@ public class RestTemplateConfigurationHubspot {
     @Bean(name = "Hubspot")
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
-                .setConnectTimeout(Duration.ofSeconds(7))
-                .setReadTimeout(Duration.ofSeconds(7))
+                .setConnectTimeout(Duration.ofSeconds(15))
+                .setReadTimeout(Duration.ofSeconds(15))
                 .defaultHeader("Authorization", "Bearer " + token).build();
     }
 }

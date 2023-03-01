@@ -146,4 +146,10 @@ public class TableForm {
     private String wanneer_gaat_het_project_spelen_ = "";
     private String scharnierzijde = "";
     private String deur_op_zuiden = "";
+    private String hulpmiddelen = "";
+    private String engineering = "";
+    private String type_engineering = "";
+    private String aftimmering_buitenzijde = "";
+    private String extra_duration = "";
+    private String extra_duration_opmerking = "";
 }

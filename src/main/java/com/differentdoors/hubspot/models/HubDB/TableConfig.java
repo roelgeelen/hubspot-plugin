@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TableConfig {
-    private List<Configuration> configuraties;
+    //private List<Configuration> configuraties;
     private String deal_id;
 
-    public void addConfiguration(String configId) {
-        this.configuraties.add(new Configuration(configId));
-    }
-
-    public void removeConfiguration(String configId) {
-        configuraties = configuraties.stream().filter(c -> !Objects.equals(c.getId(), configId)).collect(Collectors.toList());
-    }
+//    public void addConfiguration(String configId) {
+//        this.configuraties.add(new Configuration(configId));
+//    }
+//
+//    public void removeConfiguration(String configId) {
+//        configuraties = configuraties.stream().filter(c -> !Objects.equals(c.getId(), configId)).collect(Collectors.toList());
+//    }
 }

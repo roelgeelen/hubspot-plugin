@@ -91,7 +91,7 @@ public class HubdbService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(tableRow), headers);
         restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.PATCH, requestEntity, String.class);
-        publishTable(tableId);
+        //publishTable(tableId);
     }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))

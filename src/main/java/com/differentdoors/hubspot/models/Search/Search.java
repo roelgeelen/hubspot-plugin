@@ -18,4 +18,11 @@ import java.util.List;
 public class Search {
     private List<Filter> filters;
     private List<String> properties;
+    private String limit;
+    private String after;
+
+    public Search(List<Filter> filters, List<String> properties) {
+        this.filters = filters;
+        this.properties = properties;
+    }
 }

@@ -2,8 +2,11 @@ package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.Objects.Association;
+import com.differentdoors.hubspot.models.Objects.AssociationV4;
+import com.differentdoors.hubspot.models.Objects.Contact;
 import com.differentdoors.hubspot.models.Objects.Deal;
 import com.differentdoors.hubspot.models.HObject;
+import com.differentdoors.hubspot.models.Search.Search;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +48,34 @@ public class DealService {
     private RestTemplate restTemplate;
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<HObject<Deal<String>>> searchDeals(Search search) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/deals/search");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(search), headers);
+        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<Deal<String>>>>() {
+        });
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HObject<Deal<String>> createDeal(HObject<Deal<String>> deal) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/deals");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(deal), headers);
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.POST, requestEntity, String.class).getBody(), new TypeReference<HObject<Deal<String>>>() {});
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public HObject<Deal<String>> getDeal(String id) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/deals/" + id);
@@ -69,13 +100,13 @@ public class DealService {
     }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HResults<Association> getDealAssociation(String id, String toObjectType) throws Exception {
+    public HResults<AssociationV4> getDealAssociation(String id, String toObjectType) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("path", "crm/v3/objects/deals/" + id + "/associations/" + toObjectType);
+        urlParams.put("path", "crm/v4/objects/deals/" + id + "/associations/" + toObjectType);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
-        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HResults<Association>>() {});
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HResults<AssociationV4>>() {});
     }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))

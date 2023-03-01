@@ -25,4 +25,5 @@ public class Contact<T> {
     private T hs_object_id;
     private T land;
     private T type_klant;
+    private T shop_user_id;
 }

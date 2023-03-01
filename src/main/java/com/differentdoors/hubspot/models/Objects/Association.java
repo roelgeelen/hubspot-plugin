@@ -16,4 +16,8 @@ import lombok.Setter;
 public class Association {
     private String id;
     private String type;
+
+    public Association(String id) {
+        this.id = id;
+    }
 }
