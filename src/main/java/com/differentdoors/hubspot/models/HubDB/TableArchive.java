@@ -7,16 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TableConfig {
-    private String deal_id;
+public class TableArchive {
+   private String deal_id = "";
+   private String title = "";
+   private String json_configuration = "";
 }

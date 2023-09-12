@@ -15,5 +15,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class File {
     private String id;
+    private String name;
     private String url;
 }

@@ -43,7 +43,7 @@ public class LineItemService {
     private RestTemplate restTemplate;
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HObject<LineItem> createLineItem(LineItem lineItem) throws Exception {
+    public HObject<LineItem> createLineItem(HObject<LineItem> lineItem) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/line_items");
 
@@ -52,7 +52,7 @@ public class LineItemService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(new HObject<>(lineItem)), headers);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(lineItem), headers);
         return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HObject<LineItem>>() {
         });
     }

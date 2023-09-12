@@ -19,5 +19,5 @@ public class Product {
     private String hs_sku;
     private String price;
     private String hs_product_type;
-    private int weging;
+    private Integer weging;
 }

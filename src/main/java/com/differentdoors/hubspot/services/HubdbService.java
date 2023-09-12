@@ -3,6 +3,7 @@ package com.differentdoors.hubspot.services;
 import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.HubDB.HubTable;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -23,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -40,14 +42,14 @@ public class HubdbService {
     private RestTemplate restTemplate;
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HResults<HubTable<?>> getDBRows(int tableId, String filter, String filterValue) throws Exception {
+    public HResults<HubTable<?>> getDBRows(int tableId, Map<String, String> filters) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
-        if (filter != null) {
-            builder.queryParam(filter, filterValue);
+        if (filters != null) {
+            filters.forEach(builder::queryParam);
         }
 
         return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HResults<HubTable<?>>>() {
@@ -66,16 +68,18 @@ public class HubdbService {
     }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HubTable<?> createDBRow(int tableId, HubTable<?> tableRow, boolean publish) throws Exception {
+        HubTable<?> d = createRow(tableId, tableRow);
+        if (publish) {
+            publishTable(tableId);
+        }
+        return d;
+    }
+
+    @Deprecated
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public HubTable<?> createDBRow(int tableId, HubTable<?> tableRow) throws Exception {
-        Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(tableRow), headers);
-        HubTable<?> d = restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, HubTable.class);
+        HubTable<?> d = createRow(tableId, tableRow);
         publishTable(tableId);
         return d;
     }
@@ -94,6 +98,20 @@ public class HubdbService {
         //publishTable(tableId);
     }
 
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public void deleteDBRow(int tableId, String rowId, boolean publish) {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows/" + rowId + "/draft");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.DELETE, null, String.class);
+        if (publish) {
+            publishTable(tableId);
+        }
+    }
+
+    @Deprecated
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public void deleteDBRow(int tableId, String rowId) {
         Map<String, String> urlParams = new HashMap<>();
@@ -121,5 +139,17 @@ public class HubdbService {
     @Recover
     public RetryException recover(Exception t){
         return new RetryException("Maximum retries reached: " + t.getMessage());
+    }
+
+    private HubTable<?> createRow(int tableId, HubTable<?> tableRow) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "cms/v3/hubdb/tables/" + tableId + "/rows");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(tableRow), headers);
+        return restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, HubTable.class);
     }
 }

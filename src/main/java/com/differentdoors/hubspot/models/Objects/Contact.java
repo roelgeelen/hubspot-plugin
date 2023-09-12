@@ -26,4 +26,8 @@ public class Contact<T> {
     private T land;
     private T type_klant;
     private T shop_user_id;
+    private T doorgezet_naar_outsmart;
+    private T doorgezet_naar_bc;
+    private T regio;
+    private T company;
 }

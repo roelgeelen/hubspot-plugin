@@ -14,6 +14,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Company<T> {
+    private T hs_object_id;
     private T name;
     private T address;
     private T zip;
@@ -21,4 +22,5 @@ public class Company<T> {
     private T phone;
     private T country;
     private T e_mail;
+    private T type_klant;
 }

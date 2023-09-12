@@ -2,7 +2,9 @@ package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HObject;
 import com.differentdoors.hubspot.models.HResults;
+import com.differentdoors.hubspot.models.Objects.AssociationV4;
 import com.differentdoors.hubspot.models.Objects.Contact;
+import com.differentdoors.hubspot.models.Objects.Deal;
 import com.differentdoors.hubspot.models.Objects.Product;
 import com.differentdoors.hubspot.models.Search.Search;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.retry.RetryException;
 import org.springframework.retry.annotation.Backoff;
@@ -68,6 +71,29 @@ public class ContactService {
                 .queryParam("properties", getClassProperties());
 
         return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HObject<Contact<String>>>() {});
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HObject<Contact<String>> updateContact(String id, HObject<Contact<String>> contact) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/contacts/" + id);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(contact), headers);
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.PATCH, requestEntity, String.class).getBody(), new TypeReference<HObject<Contact<String>>>() {});
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<AssociationV4> getContactAssociation(String id, String toObjectType) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v4/objects/contacts/" + id + "/associations/" + toObjectType);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HResults<AssociationV4>>() {});
     }
 
     private static String getClassProperties() {

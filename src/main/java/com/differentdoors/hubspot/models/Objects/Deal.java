@@ -52,7 +52,15 @@ public class Deal<T> {
     private T montage_dag;
     private T shop_order_id;
     private T shop_order_link;
-    private T shop_verzend_methode;
+    private T shop_verzend_methode_naam;
     private T onderhanden;
     private T montage_duration;
+    private T verwachte_levertijd_opmerkingen;
+    private T doorgezet_naar_outsmart;
+    private T doorgezet_naar_openproject;
+    private T doorgezet_naar_bc;
+    private T outsmart_status;
+    private T engineering;
+    private T type_klant;
+    private T productie_status;
 }
