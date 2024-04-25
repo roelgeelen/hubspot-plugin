@@ -62,5 +62,11 @@ public class Deal<T> {
     private T outsmart_status;
     private T engineering;
     private T type_klant;
-    private T productie_status;
+    private T engineer;
+    private T customer_portal_id;
+    private T portal_signature;
+    private T order_compleet;
+    private T vast_gepland;
+    private T btw_percentage;
+    private T type_configuratie;
 }

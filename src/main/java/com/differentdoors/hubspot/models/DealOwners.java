@@ -9,8 +9,10 @@ public abstract class DealOwners {
             put("260463341", "Harm Verstappen"); // Harm
             put("289992164", "Patrick Smolders"); // Patrick
             put("253560541", "Roel Geelen"); // Roel
-            put("364617441", "Danny Rutjes"); // Danny
+            put("1405005535", "Wessel van den Houdt"); // Danny
             put("522705647", "Mark Bogers"); // Mark
+            put("248388806", "Jens Abrahams"); // Jens
+            put("1654221499", "Boy van der Velde"); // Boy
         }
     };
 

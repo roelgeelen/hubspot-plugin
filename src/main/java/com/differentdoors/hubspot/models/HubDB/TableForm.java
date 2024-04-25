@@ -31,8 +31,10 @@ public class TableForm {
     private String wie_is_er_bij_het_gesprek_aanwezig = "";
     private String geschatte_woningwaarde = "";
     private String wanneer_gaat_het_project_spelen_ = "";
+    private String hoe_heeft_u_voor_het_eerst_over_ons_gehoord_ = "";
 
     // Algemeen
+    private String afwijkend_adres = "";
     private String montage_straat = "";
     private String montage_postcode = "";
     private String montage_plaats = "";
@@ -48,12 +50,8 @@ public class TableForm {
     private String eindklant_email = "";
     private String definitieve_bestelmaat = "";
     private String deur_bestellen = "";
-    private String analoog_breedte = "";
-    private String analoog_hoogte = "";
-    private String digitaal_breedte = "";
-    private String digitaal_hoogte = "";
-    private String breedte = "";
-    private String hoogte = "";
+    private String offerte_breedte = "";
+    private String offerte_hoogte = "";
     private String verdeling_symmetrisch = "";
     private String deur_reeds_ingemeten = "";
     private String maat_tussen_metselwerk = "";
@@ -96,6 +94,8 @@ public class TableForm {
     private String kleur_kozijn = "";
     private String inclusief_besturing = "";
     private String hoogte_kabel_doorvoer = "";
+    private String toegang = "";
+    private String antipaniek = "";
 
     // Binnenzijde
     private String uitstraling_binnenzijde = "";
@@ -117,9 +117,14 @@ public class TableForm {
     private String krukset_deurbeslag = "";
     private String omklapvoetjes = "";
     private String cilinder = "";
+    private String extra_sleutel = "";
     private String ventilatieroosters = "";
     private String positie = "";
     private String gelijk_met_de_wand = "";
+    private String bekleding_rondom = "";
+    private String bekleding_rondom_boven = "";
+    private String bekleding_rondom_rechts = "";
+    private String opmerkingen_proefstaal = "";
     private String isolatie_in_de_deur = "";
     private String isoleren_van_gevel = "";
     private String buiten_bediening = "";
@@ -137,6 +142,7 @@ public class TableForm {
     private String deurbeslag = "";
     private String cilinder_type = "";
     private String deurbeslag_lengte_greep_desc = "";
+    private String besporken_doorrijhoogte = "";
 
     // Glas
     private String glassectie = "";
@@ -154,6 +160,7 @@ public class TableForm {
 
     // Montage
     private String montage = "";
+    private String opmerkingen_montage = "";
     private String bestaande_deur = "";
     private String type_deur = "";
     private String hulpmiddelen = "";
@@ -174,7 +181,11 @@ public class TableForm {
     private String materiaal_te_bestellen_door_werkvoorbereiding = "";
     private String engineering = "";
     private String type_engineering = "";
+    private Image prodte;
     private Image inmeet;
+    private String houtsoort_anders;
+    private String onderhoudscontract;
+    private String onderhoudscontract_aantal;
 
     // Media
     private Image fs1= new Image("", "image");
@@ -183,6 +194,11 @@ public class TableForm {
     private Image fb2= new Image("", "image");
     private Image fb3= new Image("", "image");
     private Image fps1= new Image("", "image");
+    private Image bst1= new Image("", "image");
+    private Image bst2= new Image("", "image");
+    private Image bst3= new Image("", "image");
+    private Image bst4= new Image("", "image");
+    private Image bst5= new Image("", "image");
 
     private String indicatie_van_montage_uren = "";
     private String aflakken_op_locatie = "";
@@ -204,4 +220,10 @@ public class TableForm {
     private String proefstaal_opgestuurd = "";
     private String proefstaal_code = "";
     private String vrije_ruimte_onder_pijl = "";
+    private String analoog_breedte = "";
+    private String analoog_hoogte = "";
+    private String digitaal_breedte = "";
+    private String digitaal_hoogte = "";
+    private String breedte = "";
+    private String hoogte = "";
 }

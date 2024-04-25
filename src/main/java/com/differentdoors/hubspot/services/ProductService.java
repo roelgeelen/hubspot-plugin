@@ -3,6 +3,7 @@ package com.differentdoors.hubspot.services;
 import com.differentdoors.hubspot.models.HObject;
 import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.Objects.Product;
+import com.differentdoors.hubspot.models.Batch.Batch;
 import com.differentdoors.hubspot.models.Search.Search;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -52,6 +53,21 @@ public class ProductService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(search), headers);
+        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<Product>>>() {
+        });
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<HObject<Product>> searchBatchProducts(Batch batch) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/products/batch/read");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(batch), headers);
         return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<Product>>>() {
         });
     }

@@ -1,6 +1,8 @@
 package com.differentdoors.hubspot.services;
 
+import com.differentdoors.hubspot.models.Batch.Batch;
 import com.differentdoors.hubspot.models.HObject;
+import com.differentdoors.hubspot.models.HResults;
 import com.differentdoors.hubspot.models.Objects.LineItem;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,21 @@ public class LineItemService {
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(lineItem), headers);
         return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HObject<LineItem>>() {
+        });
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<HObject<LineItem>> createBatchLineItem(Batch<HObject<LineItem>> lineItems) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/line_items/batch/create");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(lineItems), headers);
+        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<LineItem>>>() {
         });
     }
 
