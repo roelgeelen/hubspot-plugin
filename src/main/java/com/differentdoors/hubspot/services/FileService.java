@@ -17,7 +17,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -66,8 +65,10 @@ public class FileService {
         HttpEntity<MultiValueMap<String, Object>> requestEntity =
                 new HttpEntity<>(body, headers);
         try {
-            return restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.POST, requestEntity, File.class).getBody();
-        } catch (HttpClientErrorException e) {
+            ResponseEntity<File> t = restTemplate.postForEntity(builder.buildAndExpand(urlParams).toUri().toString(), requestEntity, File.class);
+//            ResponseEntity<File> r = restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.POST, requestEntity, File.class);
+            return t.getBody();
+        } catch (Exception e) {
             return null;
         }
     }

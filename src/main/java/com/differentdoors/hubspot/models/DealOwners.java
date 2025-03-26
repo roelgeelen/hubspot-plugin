@@ -13,6 +13,7 @@ public abstract class DealOwners {
             put("522705647", "Mark Bogers"); // Mark
             put("248388806", "Jens Abrahams"); // Jens
             put("1654221499", "Boy van der Velde"); // Boy
+            put("1698687426", "Jim Oud"); // Boy
         }
     };
 

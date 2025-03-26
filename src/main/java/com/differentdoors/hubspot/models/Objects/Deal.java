@@ -69,4 +69,14 @@ public class Deal<T> {
     private T vast_gepland;
     private T btw_percentage;
     private T type_configuratie;
+    private T dimensie;
+    private T montagetijd;
+    private T resthout;
+    private T datum_vervolgafspraak;
+    private T locatie_vervolgafspraak;
+    private T tijd_vervolgafspraak;
+    private T vervolgafspraak_met_adviseur;
+    private T ral_kleur;
+    private T behandeling;
+    private T referentie;
 }
