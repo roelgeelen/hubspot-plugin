@@ -97,7 +97,7 @@ public class DealService {
     }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HObject<?> getDeal(String id, String properties) throws Exception {
+    public HObject<Deal<String>> getDeal(String id, String properties) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/deals/" + id);
 

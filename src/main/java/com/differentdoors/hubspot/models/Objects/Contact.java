@@ -33,4 +33,6 @@ public class Contact<T> {
     private T dimensie_bc;
     private T aantal_deuren;
     private T facturatie_onderhoud;
+    private T onderhouds_datum;
+    private T afspraakverzoek;
 }

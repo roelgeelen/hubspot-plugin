@@ -13,13 +13,11 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LineItem {
-    private String name;
-    private String hs_product_id;
-    private String price;
-    private String amount;
-    private String quantity;
-    private String hs_position_on_quote;
-    private String hs_product_type;
-    private Integer weging;
+public class User<T> {
+    private T hs_object_id;
+    private T hs_main_phone;
+    private T hs_given_name;
+    private T hs_family_name;
+    private T hs_email;
+    private T hs_job_title;
 }

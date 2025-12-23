@@ -79,4 +79,20 @@ public class Deal<T> {
     private T ral_kleur;
     private T behandeling;
     private T referentie;
+    private T montage_adres;
+    private T montage_postcode;
+    private T montage_plaats;
+    private T projectmanagement;
+    private T order_leverweek;
+    private T storage_location;
+    private T order_leverdatum;
+    private T afspraakverzoek;
+    private T intern;
+    private T delen_aangeleverd;
+    private T vplan_montage;
+    private T customer_did_approved;
+    private T engineering_duration;
+    private T engineering_gereed_op;
+    private T productie_gereed_op;
+    private T projectmanager;
 }

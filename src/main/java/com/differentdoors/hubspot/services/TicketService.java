@@ -2,10 +2,10 @@ package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HObject;
 import com.differentdoors.hubspot.models.HResults;
-import com.differentdoors.hubspot.models.Objects.Afspraak;
 import com.differentdoors.hubspot.models.Objects.AssociationV4;
 import com.differentdoors.hubspot.models.Objects.Deal;
-import com.differentdoors.hubspot.models.Objects.Schema;
+import com.differentdoors.hubspot.models.Objects.Engagement;
+import com.differentdoors.hubspot.models.Objects.Ticket;
 import com.differentdoors.hubspot.models.Search.Search;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class AfspraakService {
+public class TicketService {
     @Value("${different_doors.hubspot.url}")
     private String URL;
 
@@ -48,32 +48,9 @@ public class AfspraakService {
     private RestTemplate restTemplate;
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HObject<Afspraak<String>> getAfspraak(String id) throws Exception {
+    public HResults<HObject<Ticket<String>>> searchTickets(Search search) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("path", "crm/v3/objects/2-132842630/" + id);
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("properties", getClassProperties());
-
-        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<>() {
-        });
-    }
-
-    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HResults<AssociationV4> getAssociation(String id, String toObjectType) throws Exception {
-        Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("path", "crm/v4/objects/2-132842630/" + id + "/associations/" + toObjectType);
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
-
-        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HResults<AssociationV4>>() {
-        });
-    }
-
-    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HResults<HObject<Afspraak<String>>> searchAfspraak(Search search) throws Exception {
-        Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("path", "crm/v3/objects/2-132842630/search");
+        urlParams.put("path", "crm/v3/objects/tickets/search");
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 
@@ -81,16 +58,52 @@ public class AfspraakService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(search), headers);
-        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<Afspraak<String>>>>() {
+        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<>() {
         });
     }
-    @Recover
-    public RetryException recover(Exception t) {
-        return new RetryException("Maximum retries reached: " + t.getMessage());
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HObject<Ticket<String>> getTicket(String id) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/tickets/" + id);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
+                .queryParam("properties", getClassProperties());
+
+        return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<>() {});
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HObject<Ticket<String>> updateTicket(String id, HObject<Ticket<String>> deal) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/tickets/" + id);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(deal), headers);
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.PATCH, requestEntity, String.class).getBody(), new TypeReference<>() {
+        });
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<AssociationV4> getTicketAssociation(String id, String toObjectType) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v4/objects/tickets/" + id + "/associations/" + toObjectType);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HResults<AssociationV4>>() {
+        });
     }
 
     private static String getClassProperties() {
-        return Arrays.stream(Afspraak.class.getDeclaredFields()).map(Field::getName).collect(Collectors.joining(","));
+        return Arrays.stream(Ticket.class.getDeclaredFields()).map(Field::getName).collect(Collectors.joining(","));
     }
 
+    @Recover
+    public RetryException recover(Exception t){
+        return new RetryException("Maximum retries reached: " + t.getMessage());
+    }
 }
