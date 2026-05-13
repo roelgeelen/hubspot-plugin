@@ -3,6 +3,7 @@ package com.differentdoors.hubspot.services;
 import com.differentdoors.hubspot.models.Batch.Batch;
 import com.differentdoors.hubspot.models.HObject;
 import com.differentdoors.hubspot.models.HResults;
+import com.differentdoors.hubspot.models.Objects.Association;
 import com.differentdoors.hubspot.models.Objects.LineItem;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -64,6 +65,21 @@ public class LineItemService {
     public HResults<HObject<LineItem>> createBatchLineItem(Batch<HObject<LineItem>> lineItems) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/line_items/batch/create");
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(lineItems), headers);
+        return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<HResults<HObject<LineItem>>>() {
+        });
+    }
+
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HResults<HObject<LineItem>> readBatchLineItem(Batch<Association> lineItems) throws Exception {
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("path", "crm/v3/objects/line_items/batch/read");
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL);
 

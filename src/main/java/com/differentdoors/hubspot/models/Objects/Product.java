@@ -19,5 +19,6 @@ public class Product {
     private String hs_sku;
     private String price;
     private String hs_product_type;
+    private String hs_cost_of_goods_sold;
     private Integer weging;
 }

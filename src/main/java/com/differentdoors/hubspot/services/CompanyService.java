@@ -26,35 +26,48 @@ import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
-    @Value("${different_doors.hubspot.url}")
-    private String URL;
 
-    private final ObjectMapper objectMapper = JsonMapper.builder()
+    private static final ObjectMapper objectMapper = JsonMapper.builder()
             .findAndAddModules()
             .serializationInclusion(JsonInclude.Include.NON_NULL)
             .build();
 
-    @Autowired
-    @Qualifier("Hubspot")
-    private RestTemplate restTemplate;
+    private final String url;
+    private final RestTemplate restTemplate;
 
-    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HObject<Company<String>> getCompany(String id) throws Exception {
-        Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("path", "crm/v3/objects/companies/" + id);
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
-                .queryParam("properties", getClassProperties());
-
-        return objectMapper.readValue(restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class), new TypeReference<HObject<Company<String>>>() {});
+    public CompanyService(
+            @Value("${different_doors.hubspot.url}") String url,
+            @Qualifier("Hubspot") RestTemplate restTemplate) {
+        this.url = url;
+        this.restTemplate = restTemplate;
     }
 
-    private static String getClassProperties() {
-        return Arrays.stream(Company.class.getDeclaredFields()).map(Field::getName).collect(Collectors.joining(","));
+    @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public HObject<Company<String>> getCompany(String id) {
+        try {
+            Map<String, String> urlParams = new HashMap<>();
+            urlParams.put("path", "crm/v3/objects/companies/" + id);
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
+                    .queryParam("properties", getClassProperties());
+
+            return objectMapper.readValue(
+                    restTemplate.getForObject(builder.buildAndExpand(urlParams).toUri(), String.class),
+                    new TypeReference<HObject<Company<String>>>() {}
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch company with id: " + id, e);
+        }
     }
 
     @Recover
-    public RetryException recover(Exception t){
-        return new RetryException("Maximum retries reached: " + t.getMessage());
+    public HObject<Company<String>> recover(ResourceAccessException e, String id) {
+        throw new RuntimeException("Maximum retries reached for company with id: " + id, e);
+    }
+
+    private static String getClassProperties() {
+        return Arrays.stream(Company.class.getDeclaredFields())
+                .map(Field::getName)
+                .collect(Collectors.joining(","));
     }
 }

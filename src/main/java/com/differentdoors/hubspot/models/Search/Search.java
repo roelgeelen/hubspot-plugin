@@ -20,6 +20,7 @@ public class Search {
     private List<String> properties;
     private String limit;
     private String after;
+    private List<Sort> sorts;
 
     public Search(List<?> filters, List<String> properties) {
         if (filters != null && !filters.isEmpty()) {

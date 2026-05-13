@@ -21,5 +21,12 @@ public class LineItem {
     private String quantity;
     private String hs_position_on_quote;
     private String hs_product_type;
+    private String configuration_name;
+    private String configuration_id;
+    private String bc_job_task_no;
+    private String bc_no;
+    private String bc_type;
+    private String bc_quantity;
+    private String hs_cost_of_goods_sold;
     private Integer weging;
 }

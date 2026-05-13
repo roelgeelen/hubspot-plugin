@@ -1,6 +1,7 @@
 package com.differentdoors.hubspot.services;
 
 import com.differentdoors.hubspot.models.HObject;
+import com.differentdoors.hubspot.models.HObjectAssociation;
 import com.differentdoors.hubspot.models.Objects.Note;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -40,7 +42,7 @@ public class NoteService {
     private RestTemplate restTemplate;
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public HObject<Note> createNote(Note note) throws Exception {
+    public HObject<Note> createNote(Note note, List<HObjectAssociation> associations) throws Exception {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("path", "crm/v3/objects/notes");
 
@@ -48,7 +50,7 @@ public class NoteService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(new HObject<>(note)), headers);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(new HObject<>(note, associations)), headers);
         return objectMapper.readValue(restTemplate.postForObject(builder.buildAndExpand(urlParams).toUri(), requestEntity, String.class), new TypeReference<>() {
         });
     }

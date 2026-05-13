@@ -95,4 +95,11 @@ public class Deal<T> {
     private T engineering_gereed_op;
     private T productie_gereed_op;
     private T projectmanager;
+    private T start_productie;
+    private T hs_pinned_engagement_id;
+    private T closedate;
+    private T createdate;
+    private T hs_lastmodifieddate;
+    private T available_statuses;
+    private T customer_status;
 }

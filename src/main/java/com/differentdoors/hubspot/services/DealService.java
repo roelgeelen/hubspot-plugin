@@ -104,7 +104,8 @@ public class DealService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL)
                 .queryParam("properties", properties);
 
-        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), HObject.class);
+        return objectMapper.readValue(restTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), HttpMethod.GET, null, String.class).getBody(), new TypeReference<HObject<Deal<String>>>() {
+        });
     }
 
     @Retryable(value = ResourceAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
