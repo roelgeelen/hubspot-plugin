@@ -1,0 +1,21 @@
+<!-- Voeg dit toe aan je AndroidManifest.xml -->
+
+<!-- Toestemming om externe opslag te schrijven (API < 29) -->
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    android:maxSdkVersion="28" />
+
+<!-- READ_MEDIA_VIDEO vervangt READ_EXTERNAL_STORAGE op API 33+ -->
+<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    android:maxSdkVersion="32" />
+
+<!-- Registreer de Activity -->
+<activity
+    android:name=".VideoBlurActivity"
+    android:exported="true"
+    android:label="Video Blur">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
